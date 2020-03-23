@@ -27,6 +27,7 @@ import com.generalbytes.batm.server.extensions.IWallet;
 import com.generalbytes.batm.server.extensions.extra.ethereum.erc20.ERC20Wallet;
 import com.generalbytes.batm.server.extensions.extra.ethereum.erc20.dai.DaiDefinition;
 import com.generalbytes.batm.server.extensions.extra.ethereum.erc20.usdt.UsdtDefinition;
+import com.generalbytes.batm.server.extensions.extra.ethereum.erc20.ftt.FttDefinition;
 import com.generalbytes.batm.server.extensions.extra.ethereum.sources.stasis.StasisTickerRateSource;
 import com.generalbytes.batm.server.extensions.extra.ethereum.stream365.Stream365;
 
@@ -38,6 +39,7 @@ import java.util.StringTokenizer;
 public class EthereumExtension extends AbstractExtension{
     private static final CryptoCurrencyDefinition DAI_CRYPTOCURRENCY_DEFINITION = new DaiDefinition();
     private static final CryptoCurrencyDefinition USDT_CRYPTOCURRENCY_DEFINITION = new UsdtDefinition();
+    private static final CryptoCurrencyDefinition FTT_CRYPTOCURRENCY_DEFINITION = new FttDefinition();
 
     @Override
     public String getName() {
@@ -140,6 +142,7 @@ public class EthereumExtension extends AbstractExtension{
         Set<ICryptoCurrencyDefinition> result = new HashSet<>();
         result.add(DAI_CRYPTOCURRENCY_DEFINITION);
         result.add(USDT_CRYPTOCURRENCY_DEFINITION);
+        result.add(FTT_CRYPTOCURRENCY_DEFINITION);
         return result;
     }
 
