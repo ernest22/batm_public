@@ -1673,7 +1673,7 @@
             <cryptocurrency buyonly="true">YFI</cryptocurrency>
         </wallet>
         <cryptologo cryptocurrency="YFI" file="yfi.png"/>
-        <cryptologo cryptocurrency="YFI" file="yfi.svg"/>
+        <!-- <cryptologo cryptocurrency="YFI" file="yfi.svg"/> -->
         <wallet prefix="infuraERC20_USDC_6_0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" name="Infura.io wallet - USDC">
             <!-- Hint: infuraERC20_TOKENSYMBOL_DECIMALPLACES_CONTRACTADDRESS -->
             <param name="projectId" />
