@@ -60,6 +60,7 @@ public enum CryptoCurrency {
     FLASH("FLASH"),
     FTO("FuturoCoin"),
     FTT("Ftx Token"),
+    OMG("OMG Network"),
     YFI("yearn.finance"),
     USDC("USD Coin"),
     BUSD("Binance USD"),
