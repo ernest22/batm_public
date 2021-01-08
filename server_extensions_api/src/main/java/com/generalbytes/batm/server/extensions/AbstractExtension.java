@@ -104,4 +104,14 @@ public abstract class AbstractExtension implements IExtension{
     public ITransactionScoringProvider createTransactionScoringProvider(String transactionScoringProviderParamValues) {
         return null;
     }
+
+    @Override
+    public Set<ICommunicationProvider> getCommunicationProviders() {
+        return null;
+    }
+
+    @Override
+    public Set<ISsnValidator> getSsnValidators() {
+        return null;
+    }
 }

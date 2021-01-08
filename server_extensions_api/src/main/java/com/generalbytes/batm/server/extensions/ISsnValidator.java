@@ -15,23 +15,14 @@
  * Web      :  http://www.generalbytes.com
  *
  ************************************************************************************/
-package com.generalbytes.batm.server.extensions.extra.bitcoin.wallets.coinbase.v2.dto;
 
-/**
- * Created by b00lean on 23.7.17.
- */
+package com.generalbytes.batm.server.extensions;
 
-public class CBWarning {
-    private String id;
-    private String message;
-    private String url;
+public interface ISsnValidator {
+    /**
+     * @param ssn SSN value to be validated
+     * @return true if SSN is valid
+     */
+    boolean isSsnValid(String ssn);
 
-    @Override
-    public String toString() {
-        return "CBWarning{" +
-            "id='" + id + '\'' +
-            ", message='" + message + '\'' +
-            ", url='" + url + '\'' +
-            '}';
-    }
 }

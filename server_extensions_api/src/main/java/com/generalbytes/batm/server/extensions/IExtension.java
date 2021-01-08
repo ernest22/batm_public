@@ -151,4 +151,17 @@ public interface IExtension {
      *                    The first parameter ("prefix") defines which provider to use.
      */
     ITransactionScoringProvider createTransactionScoringProvider(String transactionScoringProviderParamValues);
+
+    /**
+     * Optionally returns external communication providers that can be used by server to sending SMS or making voice calls.
+     * @return
+     */
+    Set<ICommunicationProvider> getCommunicationProviders();
+
+    /**
+     * @return Validators that can be used to validate SSNs
+     */
+    Set<ISsnValidator> getSsnValidators();
+
+
 }
