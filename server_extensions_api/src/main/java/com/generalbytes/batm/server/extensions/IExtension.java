@@ -152,11 +152,11 @@ public interface IExtension {
      */
     ITransactionScoringProvider createTransactionScoringProvider(String transactionScoringProviderParamValues);
 
-    /**
-     * Optionally returns external communication providers that can be used by server to sending SMS or making voice calls.
-     * @return
-     */
-    Set<ICommunicationProvider> getCommunicationProviders();
+    // /**
+    //  * Optionally returns external communication providers that can be used by server to sending SMS or making voice calls.
+    //  * @return
+    //  */
+    // Set<ICommunicationProvider> getCommunicationProviders();
 
     /**
      * @return Validators that can be used to validate SSNs

@@ -105,10 +105,10 @@ public abstract class AbstractExtension implements IExtension{
         return null;
     }
 
-    @Override
-    public Set<ICommunicationProvider> getCommunicationProviders() {
-        return null;
-    }
+    // @Override
+    // public Set<ICommunicationProvider> getCommunicationProviders() {
+    //     return null;
+    // }
 
     @Override
     public Set<ISsnValidator> getSsnValidators() {
