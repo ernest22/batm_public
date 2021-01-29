@@ -17,6 +17,7 @@
  ************************************************************************************/
 package com.generalbytes.batm.server.extensions;
 
+import com.generalbytes.batm.server.extensions.aml.IAMLProvider;
 import com.generalbytes.batm.server.extensions.aml.IExternalIdentityProvider;
 import com.generalbytes.batm.server.extensions.aml.scoring.ITransactionScoringProvider;
 import com.generalbytes.batm.server.extensions.watchlist.IWatchList;
@@ -97,6 +98,11 @@ public abstract class AbstractExtension implements IExtension{
 
     @Override
     public Set<IExternalIdentityProvider> getIdentityProviders() {
+        return null;
+    }
+
+    @Override
+    public Set<IAMLProvider> getAMLProviders() {
         return null;
     }
 
