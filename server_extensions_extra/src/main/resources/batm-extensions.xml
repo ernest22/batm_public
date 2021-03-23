@@ -36,11 +36,12 @@
                 <param name="token" />
                 <param name="wallet_id" />
                 <param name="wallet_passphrase" />
+                <param name="num_blocks" />
                 <cryptocurrency buyonly="true">BCH</cryptocurrency>
                 <cryptocurrency>BTC</cryptocurrency>
                 <cryptocurrency>LTC</cryptocurrency>
                 <cryptocurrency>ETH</cryptocurrency><!--BitGo’s Ethereum wallets are only available to BitGo Enterprise customers-->
-                <help>Host should start with http:// or https://</help>
+                <help>Host should start with http:// or https://. num_blocks is an integer greater than 2.</help>
             </wallet>
             <wallet prefix="bitgonoforward" name="BitGo Wallet (no forward)">
                 <sendtomany supported="true"/>
@@ -50,11 +51,12 @@
                 <param name="token" />
                 <param name="wallet_id" />
                 <param name="wallet_passphrase" />
+                <param name="num_blocks" />
                 <cryptocurrency buyonly="true">BCH</cryptocurrency>
                 <cryptocurrency>BTC</cryptocurrency>
                 <cryptocurrency>LTC</cryptocurrency>
                 <cryptocurrency>ETH</cryptocurrency><!--BitGo’s Ethereum wallets are only available to BitGo Enterprise customers-->
-                <help>This variant of the wallet generates new addresses for each transaction and does not forward payments from temporary address. Host should start with http:// or https://</help>
+                <help>This variant of the wallet generates new addresses for each transaction and does not forward payments from temporary address. Host should start with http:// or https://. num_blocks is an integer greater than 2.</help>
             </wallet>
             <wallet prefix="cryptx" name="CryptX Wallet System">
                 <sendtomany supported="false"/>
@@ -63,11 +65,13 @@
                 <param name="port" />
                 <param name="token" />
                 <param name="wallet_id" />
+                <param name="priority" />
                 <cryptocurrency buyonly="true">BCH</cryptocurrency>
                 <cryptocurrency>BTC</cryptocurrency>
                 <cryptocurrency>LTC</cryptocurrency>
                 <cryptocurrency>ETH</cryptocurrency>
-                <help>Host should start with http:// or https://</help>
+                <cryptocurrency>USDT</cryptocurrency>
+                <help>Host should start with http:// or https://. You can specify optional parameter priority to increase the network fee paid in the given transaction. Options are low, medium, high and will try to get your transaction included into next 24, 8, or 2 blocks, respectively. If not specified, high priority will be used.</help>
             </wallet>
             <wallet prefix="cryptxnoforward" name="CryptX Wallet System (no forward)">
                 <sendtomany supported="false"/>
@@ -76,11 +80,13 @@
                 <param name="port" />
                 <param name="token" />
                 <param name="wallet_id" />
+                <param name="priority" />
                 <cryptocurrency buyonly="true">BCH</cryptocurrency>
                 <cryptocurrency>BTC</cryptocurrency>
                 <cryptocurrency>LTC</cryptocurrency>
                 <cryptocurrency>ETH</cryptocurrency>
-                <help>This variant of the wallet generates new addresses for each transaction and does not forward payments from temporary address. Host should start with http:// or https://</help>
+                <cryptocurrency>USDT</cryptocurrency>
+                <help>Host should start with http:// or https://. You can specify optional parameter priority to increase the network fee paid in the given transaction. Options are low, medium, high and will try to get your transaction included into next 24, 8, or 2 blocks, respectively. If not specified, high priority will be used.</help>
             </wallet>
             <ratesource prefix="btcfix" name ="Fix Price" >
                 <param name="price" />
@@ -332,11 +338,14 @@
         </exchange>
         <cryptologo cryptocurrency="BTC" file="btc.png"/>
         <cryptologo cryptocurrency="BTC" file="btc.svg"/>
+        <cryptologo cryptocurrency="ETC" file="etc.svg"/>
+        <cryptologo cryptocurrency="ETC" file="etc.png"/>
         <ratesource prefix="coinbasers" name="Coinbase.com Rate Source" >
             <param name="fiatcurrency" />
             <cryptocurrency>BCH</cryptocurrency>
             <cryptocurrency>BTC</cryptocurrency>
             <cryptocurrency>LTC</cryptocurrency>
+            <cryptocurrency>ETC</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>DAI</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
@@ -350,6 +359,7 @@
             <cryptocurrency buyonly="true">BCH</cryptocurrency>
             <cryptocurrency>BTC</cryptocurrency>
             <cryptocurrency>DASH</cryptocurrency>
+            <cryptocurrency>ETC</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>LTC</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
@@ -363,6 +373,8 @@
             <cryptocurrency buyonly="true">BCH</cryptocurrency>
             <cryptocurrency>BTC</cryptocurrency>
             <cryptocurrency>DAI</cryptocurrency>
+            <cryptocurrency>BIZZ</cryptocurrency>
+            <cryptocurrency>ETC</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>LTC</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
@@ -376,6 +388,7 @@
             <param name="paymentmethod" />
             <cryptocurrency>BCH</cryptocurrency>
             <cryptocurrency>BTC</cryptocurrency>
+            <cryptocurrency>ETC</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>LTC</cryptocurrency>
             <cryptocurrency>BAT</cryptocurrency>
@@ -391,6 +404,29 @@
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>LTC</cryptocurrency>
         </exchange>
+        <exchange prefix="poloniex" name="Poloniex">
+            <param name="key"/>
+            <param name="secret"/>
+            <param name="fiatcurrency" />
+            <cryptocurrency>BCH</cryptocurrency>
+            <cryptocurrency>BTC</cryptocurrency>
+            <cryptocurrency>BURST</cryptocurrency>
+            <cryptocurrency>ETH</cryptocurrency>
+            <cryptocurrency>LTC</cryptocurrency>
+            <cryptocurrency>DASH</cryptocurrency>
+            <cryptocurrency>DAI</cryptocurrency>
+            <cryptocurrency>DGB</cryptocurrency>
+            <cryptocurrency>DOGE</cryptocurrency>
+            <cryptocurrency>LSK</cryptocurrency>
+            <cryptocurrency>NXT</cryptocurrency>
+            <cryptocurrency>POT</cryptocurrency>
+            <cryptocurrency>REP</cryptocurrency>
+            <cryptocurrency>SYS</cryptocurrency>
+            <cryptocurrency>VIA</cryptocurrency>
+            <cryptocurrency>XMR</cryptocurrency>
+            <cryptocurrency>XRP</cryptocurrency>
+            <cryptocurrency>XPM</cryptocurrency>
+        </exchange>
         <ratesource prefix="coinbasepro" name="Coinbase Pro">
             <param name="fiatcurrency" />
             <cryptocurrency>BCH</cryptocurrency>
@@ -399,6 +435,27 @@
             <cryptocurrency>LTC</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
             <cryptocurrency>XTZ</cryptocurrency>
+        </ratesource>
+        <ratesource prefix="poloniex" name="Poloniex">
+            <param name="fiatcurrency" />
+            <cryptocurrency>BCH</cryptocurrency>
+            <cryptocurrency>BTC</cryptocurrency>
+            <cryptocurrency>BURST</cryptocurrency>
+            <cryptocurrency>ETH</cryptocurrency>
+            <cryptocurrency>LTC</cryptocurrency>
+            <cryptocurrency>DASH</cryptocurrency>
+            <cryptocurrency>DAI</cryptocurrency>
+            <cryptocurrency>DGB</cryptocurrency>
+            <cryptocurrency>DOGE</cryptocurrency>
+            <cryptocurrency>LSK</cryptocurrency>
+            <cryptocurrency>NXT</cryptocurrency>
+            <cryptocurrency>POT</cryptocurrency>
+            <cryptocurrency>REP</cryptocurrency>
+            <cryptocurrency>SYS</cryptocurrency>
+            <cryptocurrency>VIA</cryptocurrency>
+            <cryptocurrency>XMR</cryptocurrency>
+            <cryptocurrency>XRP</cryptocurrency>
+            <cryptocurrency>XPM</cryptocurrency>
         </ratesource>
         <exchange prefix="coingi" name="Coingi.com">
             <param name="key"/>
@@ -670,12 +727,14 @@
             <param name="apikey"/>
             <param name="fiatcurrency"/>
             <cryptocurrency>BTC</cryptocurrency>
+            <cryptocurrency>DOGE</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
         </exchange>
         <ratesource prefix="bitpandapro" name="Bitpanda Pro">
             <param name="fiatcurrency"/>
             <cryptocurrency>BTC</cryptocurrency>
+            <cryptocurrency>DOGE</cryptocurrency>
             <cryptocurrency>ETH</cryptocurrency>
             <cryptocurrency>XRP</cryptocurrency>
         </ratesource>
@@ -840,6 +899,10 @@
             <param name="macaroon" />
             <param name="cert" />
             <help>URL starts with https://, may contain a port number and must end with '/'. Macaroon and cert are hex encoded files admin.macaroon and tls.cert. Cert parameter is not mandatory if trusted authority signed cert is used.</help>
+            <cryptocurrency>LBTC</cryptocurrency>
+        </wallet>
+        <wallet prefix="lbtcdemo" name="Bitcoin Lightning Network Demo Wallet">
+            <help>For testing use only</help>
             <cryptocurrency>LBTC</cryptocurrency>
         </wallet>
         <cryptologo cryptocurrency="LBTC" file="lbtc.png"/>
@@ -1872,8 +1935,16 @@
             <help>Mnemonic should be 24 words delimited by spaces. gaslimit is optional</help>
             <cryptocurrency>HT</cryptocurrency>
         </wallet>
-        <cryptologo cryptocurrency="HT" file="HT.png"/>
-        <cryptologo cryptocurrency="HT" file="HT.svg"/>
+        <cryptologo cryptocurrency="HT" file="ht.png"/>
+        <cryptologo cryptocurrency="HT" file="ht.svg"/>
+        <wallet prefix="infuraERC20_ZPAE_18_0x045Eb7e34e94B28C7A3641BC5e1A1F61f225Af9F" name="Infura.io wallet - ZPAE">
+            <param name="projectId" />
+            <param name="mnemonic" />
+            <param name="gaslimit" />
+            <help>Mnemonic should be 24 words delimited by spaces. gaslimit is optional</help>
+            <cryptocurrency>ZPAE</cryptocurrency>
+        </wallet>
+        <cryptologo cryptocurrency="ZPAE" file="zpae.png"/>
         <!-- ADD your ERC20 tokens here. And don't forget to add cryptologos. -->
     </extension>
     <!--<extension class="com.generalbytes.batm.server.extensions.extra.examples.TransactionExtension" />-->

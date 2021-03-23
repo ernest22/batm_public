@@ -35,6 +35,7 @@ import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.dvchain.D
 import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.hitbtc.HitbtcExchange;
 import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.itbit.ItBitExchange;
 import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.enigma.EnigmaExchange;
+import com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.poloniex.PoloniexExchange;
 import com.generalbytes.batm.server.extensions.extra.bitcoin.paymentprocessors.bitcoinpay.BitcoinPayPP;
 import com.generalbytes.batm.server.extensions.extra.bitcoin.paymentprocessors.coinofsale.CoinOfSalePP;
 import com.generalbytes.batm.server.extensions.extra.bitcoin.sources.bitkub.BitKubRateSource;
@@ -59,6 +60,7 @@ import java.math.BigDecimal;
 import java.net.InetSocketAddress;
 import java.util.*;
 
+import static com.generalbytes.batm.common.currencies.CryptoCurrency.USDT;
 import static com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.bitflyer.BitFlyerExchange.BITFLYER_COM_BASE_URL;
 import static com.generalbytes.batm.server.extensions.extra.bitcoin.exchanges.bitflyer.BitFlyerExchange.BITFLYER_JP_BASE_URL;
 
@@ -204,6 +206,14 @@ public class BitcoinExtension extends AbstractExtension {
                     preferredFiatCurrency = paramTokenizer.nextToken().toUpperCase();
                 }
                 return BitpandaProExchange.asExchange(apikey, preferredFiatCurrency);
+            } else if ("poloniex".equalsIgnoreCase(prefix)) {
+                String preferredFiatCurrency = USDT.getCode();
+                String key = paramTokenizer.nextToken();
+                String secret = paramTokenizer.nextToken();
+                if (paramTokenizer.hasMoreTokens()) {
+                    preferredFiatCurrency = paramTokenizer.nextToken().toUpperCase();
+                }
+                return new PoloniexExchange(key, secret, preferredFiatCurrency);
             }
         }
         return null;
@@ -265,12 +275,14 @@ public class BitcoinExtension extends AbstractExtension {
                 String proxyUrl = st.nextToken("\n").replaceFirst(":", "");
                 return new BitcoreWallet(apiKey, proxyUrl);
             } else if ("bitgo".equalsIgnoreCase(walletType) || "bitgonoforward".equalsIgnoreCase(walletType)) {
-                // bitgo:host:port:token:wallet_address:wallet_passphrase
-                // but host is optionally including the "http://" and port is optional
+                // bitgo:host:port:token:wallet_address:wallet_passphrase:num_blocks
+                // but host is optionally including the "http://" and port is optional,
+                // num_blocks is an optional integer greater than 2 and it's used to calculate mining fee.
                 // bitgo:http://localhost:80:token:wallet_address:wallet_passphrase
                 // bitgo:http://localhost:token:wallet_address:wallet_passphrase
                 // bitgo:localhost:token:wallet_address:wallet_passphrase
                 // bitgo:localhost:80:token:wallet_address:wallet_passphrase
+                // bitgo:localhost:80:token:wallet_address:wallet_passphrase:num_blocks
 
                 String first = st.nextToken();
                 String scheme;
@@ -300,10 +312,22 @@ public class BitcoinExtension extends AbstractExtension {
                 host = tunnelAddress.getHostString();
                 port = tunnelAddress.getPort();
 
-                if ("bitgonoforward".equalsIgnoreCase(walletType)) {
-                    return new BitgoWalletWithUniqueAddresses(scheme, host, port, token, walletAddress, walletPassphrase);
+                String blocks;
+                int num;
+                Integer numBlocks = 2;
+                if(st.hasMoreTokens()){
+                  blocks = st.nextToken();
+                  num = Integer.parseInt(blocks);
+                  if(num > 2) {
+                    numBlocks = num;
+                  }
                 }
-                return new BitgoWallet(scheme, host, port, token, walletAddress, walletPassphrase);
+
+                if ("bitgonoforward".equalsIgnoreCase(walletType)) {
+                  return new BitgoWalletWithUniqueAddresses(scheme, host, port, token, walletAddress, walletPassphrase, numBlocks);
+                }
+
+                return new BitgoWallet(scheme, host, port, token, walletAddress, walletPassphrase, numBlocks);
 
             } else if ("coinbasewallet2".equalsIgnoreCase(walletType)
                 || "coinbasewallet2noforward".equalsIgnoreCase(walletType)) {
@@ -321,6 +345,40 @@ public class BitcoinExtension extends AbstractExtension {
                     return new CoinbaseWalletV2WithUniqueAddresses(apiKey, secretKey, accountName);
                 }
                 return new CoinbaseWalletV2(apiKey, secretKey, accountName);
+            } else if ("cryptx".equalsIgnoreCase(walletType) || "cryptxnoforward".equalsIgnoreCase(walletType)) {
+
+                String first = st.nextToken();
+                String scheme;
+                String host;
+                if (first.startsWith("http")) {
+                    scheme = first;
+                    host = st.nextToken().replaceAll("/", "");
+                } else {
+                    scheme = "http";
+                    host = first;
+                }
+
+                int port;
+                String token;
+                String next = st.nextToken();
+                if (next.length() > 6) {
+                    port = scheme.equals("https") ? 443 : 80;
+                    token = next;
+                } else {
+                    port = Integer.parseInt(next);
+                    token = st.nextToken();
+                }
+                String walletId = st.nextToken();
+
+                String priority = null;
+                if (st.hasMoreTokens()) {
+                    priority = st.nextToken();
+                }
+
+                if ("cryptxnoforward".equalsIgnoreCase(walletType)) {
+                    return new CryptXWithUniqueAddresses(scheme, host, port, token, walletId, priority);
+                }
+                return new CryptXWallet(scheme, host, port, token, walletId, priority);
             }
         }
         } catch (Exception e) {
@@ -475,6 +533,12 @@ public class BitcoinExtension extends AbstractExtension {
                     preferredFiatCurrency = st.nextToken().toUpperCase();
                 }
                 return BitpandaProExchange.asRateSource(preferredFiatCurrency);
+            } else if ("poloniex".equals(rsType)) {
+                String preferredFiatCurrency = USDT.getCode();
+                if (st.hasMoreTokens()) {
+                    preferredFiatCurrency = st.nextToken().toUpperCase();
+                }
+                return new PoloniexExchange(preferredFiatCurrency);
             }
         }
         return null;

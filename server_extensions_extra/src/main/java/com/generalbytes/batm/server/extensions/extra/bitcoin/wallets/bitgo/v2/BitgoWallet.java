@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,11 +55,17 @@ public class BitgoWallet implements IWallet, ICanSendMany {
     protected String walletPassphrase;
     protected String url;
     protected static final Integer readTimeout = 90 * 1000; //90 seconds
+    protected Integer numBlocks;
 
     public BitgoWallet(String scheme, String host, int port, String token, String walletId, String walletPassphrase) {
+      this(scheme, host, port, token, walletId, walletPassphrase, 2);
+    }
+
+    public BitgoWallet(String scheme, String host, int port, String token, String walletId, String walletPassphrase, Integer numBlocks) {
         this.walletId = walletId;
         this.walletPassphrase = walletPassphrase;
         this.url = new HttpUrl.Builder().scheme(scheme).host(host).port(port).build().toString();
+        this.numBlocks = numBlocks;
 
         ClientConfig config = new ClientConfig();
         config.setHttpReadTimeout(readTimeout);
@@ -79,9 +86,11 @@ public class BitgoWallet implements IWallet, ICanSendMany {
     }
 
     private String getResultTxId(Map<String, Object> result) {
-        if (result != null && result.get("txid") instanceof String) {
+        Objects.requireNonNull(result, "Returned map is null");
+        if (result.get("txid") instanceof String) {
             return (String) result.get("txid");
         }
+        log.warn("txid not returned: {}", result);
         return null;
     }
 
@@ -90,7 +99,7 @@ public class BitgoWallet implements IWallet, ICanSendMany {
         List<BitGoRecipient> recipients = transfers.stream()
             .map(transfer -> new BitGoRecipient(transfer.getDestinationAddress(), toSatoshis(transfer.getAmount(), cryptoCurrency)))
             .collect(Collectors.toList());
-        final BitGoSendManyRequest request = new BitGoSendManyRequest(recipients, walletPassphrase);
+        final BitGoSendManyRequest request = new BitGoSendManyRequest(recipients, walletPassphrase, this.numBlocks);
         try {
             return getResultTxId(api.sendMany(cryptoCurrency.toLowerCase(), this.walletId, request));
         } catch (HttpStatusIOException hse) {
@@ -105,7 +114,7 @@ public class BitgoWallet implements IWallet, ICanSendMany {
 
     @Override
     public String sendCoins(String destinationAddress, BigDecimal amount, String cryptoCurrency, String description) {
-        final BitGoCoinRequest request = new BitGoCoinRequest(destinationAddress, toSatoshis(amount, cryptoCurrency), walletPassphrase);
+        final BitGoCoinRequest request = new BitGoCoinRequest(destinationAddress, toSatoshis(amount, cryptoCurrency), walletPassphrase, this.numBlocks);
         try {
             return getResultTxId(api.sendCoins(cryptoCurrency.toLowerCase(), this.walletId, request));
         } catch (HttpStatusIOException hse) {

@@ -40,11 +40,16 @@ public class DummyExchangeAndWalletAndSource implements IExchange, IWallet, IRat
     private static final String TXT_ID = "txt_id";
     private String fiatCurrency;
     private String cryptoCurrency;
+    private final boolean simulateFailure;
     private String walletAddress;
 
     private static final Logger log = LoggerFactory.getLogger("batm_public.server_extensions_api.DummyExchangeAndWalletAndSource");
 
     public DummyExchangeAndWalletAndSource(String fiatCurrency, String cryptoCurrency, String walletAddress) throws IllegalArgumentException {
+        this(fiatCurrency, cryptoCurrency, false, walletAddress);
+    }
+
+    public DummyExchangeAndWalletAndSource(String fiatCurrency, String cryptoCurrency, boolean simulateFailure, String walletAddress) throws IllegalArgumentException {
         if (fiatCurrency == null || cryptoCurrency == null) {
             throw new NullPointerException("Fiat and crypto currency has to be specified.");
         }
@@ -67,6 +72,7 @@ public class DummyExchangeAndWalletAndSource implements IExchange, IWallet, IRat
 
         this.cryptoCurrency = cryptoCurrency;
         this.fiatCurrency = fiatCurrency;
+        this.simulateFailure = simulateFailure;
     }
 
     @Override
@@ -169,5 +175,13 @@ public class DummyExchangeAndWalletAndSource implements IExchange, IWallet, IRat
     @Override
     public String getPreferredCryptoCurrency() {
         return cryptoCurrency;
+    }
+
+    private String getSellTransactionId() {
+        return simulateFailure ? null : String.format("22222222222222222222222222222222222222222222222222222222%08x", new Random().nextInt());
+    }
+
+    private String getSendTransactionId() {
+        return simulateFailure ? null : String.format("11111111111111111111111111111111111111111111111111111111%08x", new Random().nextInt());
     }
 }
