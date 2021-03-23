@@ -78,8 +78,11 @@ public class ParsedSanctions implements IParsedSanctions {
             for (NameAliasType alias : aliases) {
                 boolean addedMatch = false;
                 if (!alias.getWholeName().trim().isEmpty()) {
-                    if (alias.getWholeName().equalsIgnoreCase(lastName) || alias.getWholeName().equalsIgnoreCase(firstName + " " + lastName)) {
+                    if (alias.getWholeName().equalsIgnoreCase(firstName + " " + lastName)) {
                         matchedParties.add(new Match(alias.getLogicalId() + "", 100));
+                        addedMatch = true;
+                    } else if (alias.getWholeName().equalsIgnoreCase(lastName)) {
+                        matchedParties.add(new Match(alias.getLogicalId() + "", 50));
                         addedMatch = true;
                     }
                 }
@@ -110,5 +113,4 @@ public class ParsedSanctions implements IParsedSanctions {
     public String getPartyIndexByPartyId(String partyId) {
         return partyId;
     }
-
 }

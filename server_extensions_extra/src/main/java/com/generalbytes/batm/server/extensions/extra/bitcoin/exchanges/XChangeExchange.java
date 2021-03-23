@@ -58,9 +58,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Comparator.comparing;
+
 public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceAdvanced {
-    private static final Comparator<LimitOrder> asksComparator = Comparator.comparing(LimitOrder::getLimitPrice);
-    private static final Comparator<LimitOrder> bidsComparator = Comparator.comparing(LimitOrder::getLimitPrice).reversed();
+    private static final Comparator<LimitOrder> asksComparator = comparing(LimitOrder::getLimitPrice);
+    private static final Comparator<LimitOrder> bidsComparator = comparing(LimitOrder::getLimitPrice).reversed();
 
     private String preferredFiatCurrency;
     private static final long cacheRefreshSeconds = 30;
@@ -204,7 +206,7 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
         return accountInfo.getWallet(translateCryptoCurrencySymbolToExchangeSpecificSymbol(currency));
     }
 
-    public final String sendCoins(String destinationAddress, BigDecimal amount, String cryptoCurrency, String description) {
+    public String sendCoins(String destinationAddress, BigDecimal amount, String cryptoCurrency, String description) {
         if (!isCryptoCurrencySupported(cryptoCurrency)){
             return null;
         }
@@ -238,7 +240,8 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
             }
         }
 
-        return accountService.withdrawFunds(exchangeCryptoCurrency, amount, destinationAddress);
+        CurrencyPair pair = new CurrencyPair(translateCryptoCurrencySymbolToExchangeSpecificSymbol(cryptoCurrency), getPreferredFiatCurrency());
+        return accountService.withdrawFunds(exchangeCryptoCurrency, getTradableAmount(amount, pair), destinationAddress);
     }
 
     public String purchaseCoins(BigDecimal amount, String cryptoCurrency, String fiatCurrencyToUse, String description) {
@@ -513,16 +516,10 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
             BigDecimal targetAmount = cryptoAmount;
             BigDecimal asksTotal = BigDecimal.ZERO;
             BigDecimal tradableLimit = null;
-            Collections.sort(asks, new Comparator<LimitOrder>() {
-                @Override
-                public int compare(LimitOrder lhs, LimitOrder rhs) {
-                    return lhs.getLimitPrice().compareTo(rhs.getLimitPrice());
-                }
-            });
 
-//            log.debug("Selected asks:");
+            asks.sort(comparing(LimitOrder::getLimitPrice));
+
             for (LimitOrder ask : asks) {
-//                log.debug("ask = " + ask);
                 asksTotal = asksTotal.add(ask.getOriginalAmount());
                 if (targetAmount.compareTo(asksTotal) <= 0) {
                     tradableLimit = ask.getLimitPrice();
@@ -564,12 +561,7 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
             BigDecimal bidsTotal = BigDecimal.ZERO;
             BigDecimal tradableLimit = null;
 
-            Collections.sort(bids, new Comparator<LimitOrder>() {
-                @Override
-                public int compare(LimitOrder lhs, LimitOrder rhs) {
-                    return rhs.getLimitPrice().compareTo(lhs.getLimitPrice());
-                }
-            });
+            bids.sort((lhs, rhs) -> rhs.getLimitPrice().compareTo(lhs.getLimitPrice()));
 
             for (LimitOrder bid : bids) {
                 bidsTotal = bidsTotal.add(bid.getOriginalAmount());
@@ -624,7 +616,7 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
                 OrderBook orderBook = marketDataService.getOrderBook(currencyPair);
                 List<LimitOrder> asks = orderBook.getAsks();
 
-                Collections.sort(asks, asksComparator);
+                asks.sort(asksComparator);
 
                 LimitOrder order = new LimitOrder(Order.OrderType.BID, getTradableAmount(amount, currencyPair), currencyPair, "", null,
                     getTradablePrice(amount, asks));
@@ -868,5 +860,10 @@ public abstract class XChangeExchange implements IExchangeAdvanced, IRateSourceA
 
     protected String translateCryptoCurrencySymbolToExchangeSpecificSymbol(String from) {
         return from;
+    }
+
+    protected BigDecimal getWithdrawalFee(String cryptoCurrency) {
+        Currency exchangeCryptoCurrency = Currency.getInstance(translateCryptoCurrencySymbolToExchangeSpecificSymbol(cryptoCurrency));
+        return exchange.getExchangeMetaData().getCurrencies().get(exchangeCryptoCurrency).getWithdrawalFee();
     }
 }

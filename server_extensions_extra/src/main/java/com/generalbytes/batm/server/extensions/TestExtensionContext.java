@@ -105,17 +105,7 @@ public class TestExtensionContext implements IExtensionContext {
 
     @Override
     public ITunnelManager getTunnelManager() {
-        return new ITunnelManager() {
-            @Override
-            public InetSocketAddress connectIfNeeded(String walletLogin, String tunnelPassword, InetSocketAddress originalWalletAddress)  {
-                return originalWalletAddress;
-            }
-
-            @Override
-            public boolean removeTunnelKnownHost(String walletLogin, String tunnelPassword) {
-                return false;
-            }
-        };
+        return (walletLogin, tunnelPassword, originalWalletAddress) -> originalWalletAddress;
     }
 
     @Override

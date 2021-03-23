@@ -82,6 +82,7 @@ public class CoinbaseExchange implements IRateSourceAdvanced, IExchangeAdvanced 
         CRYPTO_CURRENCIES.add(CryptoCurrency.BAT.getCode());
         CRYPTO_CURRENCIES.add(CryptoCurrency.BCH.getCode());
         CRYPTO_CURRENCIES.add(CryptoCurrency.BTC.getCode());
+        CRYPTO_CURRENCIES.add(CryptoCurrency.ETC.getCode());
         CRYPTO_CURRENCIES.add(CryptoCurrency.ETH.getCode());
         CRYPTO_CURRENCIES.add(CryptoCurrency.LTC.getCode());
         CRYPTO_CURRENCIES.add(CryptoCurrency.XRP.getCode());
@@ -116,7 +117,6 @@ public class CoinbaseExchange implements IRateSourceAdvanced, IExchangeAdvanced 
         if (preferedFiatCurrency != null && !preferedFiatCurrency.isEmpty()) {
             return preferedFiatCurrency;
         }
-
         return FiatCurrency.USD.getCode();
     }
 
